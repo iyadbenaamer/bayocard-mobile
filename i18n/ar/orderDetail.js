@@ -1,0 +1,17 @@
+export default {
+  amountWithCurrency: "{{amount}} د.ل.",
+  defaultUserName: "مستخدم",
+  noPrinterConfigured: "لا توجد طابعة متاحة. يرجى إعداد طابعة من صفحة الملف الشخصي.",
+  printFailed: "فشلت الطباعة. تحقق من الاتصال بالطابعة.",
+  printFailuresMessage: "فشلت طباعة {{failed}} من {{total}} بطاقات.",
+  fetchError: "حدث خطأ أثناء جلب تفاصيل الطلب.",
+  title: "تفاصيل الطلب",
+  orderNotFound: "الطلب غير موجود.",
+  back: "الرجوع",
+  printAll: "طباعة الكل",
+  orderNumberLabel: "رقم الطلب:",
+  dateLabel: "التاريخ:",
+  totalLabel: "الإجمالي:",
+  purchasedCardsTitle: "البطاقات المشتراة",
+  notesLabel: "ملاحظات:",
+};

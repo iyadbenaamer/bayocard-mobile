@@ -1,0 +1,114 @@
+{
+  "expo": {
+    "name": "Bayo Card",
+    "slug": "bayo-card",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/logo-simple.png",
+    "scheme": "bayocard",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSBluetoothAlwaysUsageDescription": "Required to discover and connect to Bluetooth printers.",
+        "NSBluetoothPeripheralUsageDescription": "Required to discover and connect to Bluetooth printers.",
+        "NSLocationWhenInUseUsageDescription": "Required to scan for Bluetooth devices on some Android/iOS versions.",
+        "NSLocalNetworkUsageDescription": "Needed to connect to printers on your local network.",
+        "NSBonjourServices": [
+          "_ipp._tcp",
+          "_printer._tcp",
+          "_ipp._tcp",
+          "_printer._tcp"
+        ]
+      },
+      "entitlements": {
+        "com.apple.developer.devicecheck.appattest-environment": "development"
+      }
+    },
+    "android": {
+      "softwareKeyboardLayoutMode": "resize",
+      "versionCode": 1,
+      "googleServicesFile": "./google-services.json",
+      "adaptiveIcon": {
+        "backgroundColor": "#000000",
+        "foregroundImage": "./assets/images/android-adaptive-icon.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.bayocard",
+      "permissions": [
+        "INTERNET",
+        "BLUETOOTH",
+        "BLUETOOTH_ADMIN",
+        "BLUETOOTH_CONNECT",
+        "BLUETOOTH_SCAN",
+        "BLUETOOTH_ADVERTISE",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "LOCATION_WHEN_IN_USE",
+        "ACCESS_NETWORK_STATE",
+        "INTERNET",
+        "BLUETOOTH",
+        "BLUETOOTH_ADMIN",
+        "BLUETOOTH_CONNECT",
+        "BLUETOOTH_SCAN",
+        "BLUETOOTH_ADVERTISE",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "LOCATION_WHEN_IN_USE",
+        "ACCESS_NETWORK_STATE"
+      ]
+    },
+    "web": {
+      "output": "static",
+      "bundler": "metro",
+      "favicon": "./assets/images/logo-simple.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/logo-simple.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#00000000",
+          "dark": {
+            "backgroundColor": "#00000000"
+          }
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/logo-simple.png",
+          "color": "#1094ea"
+        }
+      ],
+      "./plugins/withBluetoothManifestAttributes.js",
+      "expo-web-browser",
+      "expo-font",
+      "expo-image",
+      "expo-secure-store",
+      "expo-status-bar",
+      "expo-localization"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "runtimeVersion": {
+      "policy": "fingerprint"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/880491f4-643a-46d6-a552-9ec55a03eb77",
+      "checkAutomatically": "ON_ERROR_RECOVERY"
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "880491f4-643a-46d6-a552-9ec55a03eb77"
+      }
+    },
+    "owner": "iyadbenaamer"
+  }
+}

@@ -1,0 +1,16 @@
+export default {
+  title: "الإعدادات",
+  printerRow: "طابعة الإيصالات",
+  apiKeysRow: "مفاتيح API",
+  printQrRow: "طباعة رمز QR على البطاقات",
+  checkUpdatesRow: "التحقق من التحديثات",
+  versionFooter: "إصدار التطبيق {{version}}",
+  updateStatusUpToDate: "أنت تستخدم أحدث إصدار من التطبيق",
+  updateStatusDownloaded: "تم تحميل تحديث جديد، أعد تشغيل التطبيق لتفعيله",
+  updateStatusDisabled: "التحقق من التحديثات غير متاح في هذه النسخة",
+  updateStatusError: "تعذر التحقق من التحديثات، حاول مرة أخرى",
+  newUpdateAlertTitle: "تحديث جديد",
+  checkUpdatesAlertTitle: "التحقق من التحديثات",
+  later: "لاحقًا",
+  restartNow: "إعادة التشغيل الآن",
+};

@@ -1,0 +1,16 @@
+export default {
+  phoneNotRegisteredError: "This phone number isn't linked to any account.",
+  codeSendingDisabledError: "Sending verification codes is temporarily disabled.",
+  resendNotAllowedError: "Can't resend the code right now. Try again later.",
+  genericError: "Couldn't continue. Please try again.",
+  phoneRequired: "Please enter your phone number.",
+  phoneInvalid: "Invalid phone number. It must start with 09 and have 10 digits.",
+  codeSentSuccess: "Verification code sent.",
+  title: "Forgot your password",
+  subtitle: "Enter your phone number to receive a password recovery code.",
+  phoneLabel: "Phone number",
+  phonePlaceholder: "09xxxxxxxx",
+  continuingButton: "Continuing...",
+  continueButton: "Continue",
+  backToLogin: "Back to login",
+};

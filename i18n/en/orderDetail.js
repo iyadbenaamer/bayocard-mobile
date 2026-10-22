@@ -1,0 +1,17 @@
+export default {
+  amountWithCurrency: "{{amount}} LYD",
+  defaultUserName: "Customer",
+  noPrinterConfigured: "No printer available. Please set one up from the profile page.",
+  printFailed: "Printing failed. Check the printer connection.",
+  printFailuresMessage: "{{failed}} of {{total}} cards failed to print.",
+  fetchError: "An error occurred while fetching order details.",
+  title: "Order Details",
+  orderNotFound: "Order not found.",
+  back: "Back",
+  printAll: "Print All",
+  orderNumberLabel: "Order number:",
+  dateLabel: "Date:",
+  totalLabel: "Total:",
+  purchasedCardsTitle: "Purchased Cards",
+  notesLabel: "Notes:",
+};

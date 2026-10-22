@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "108994343738",
+    "project_id": "bayo-card",
+    "storage_bucket": "bayo-card.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:108994343738:android:ddf270339c596a99441603",
+        "android_client_info": {
+          "package_name": "com.bayocard"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxV3op9h_f5k2stzzQj86SHUakY0y5uAY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

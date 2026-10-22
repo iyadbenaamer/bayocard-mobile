@@ -1,0 +1,32 @@
+export default {
+  invalidRequestError: "يرجى إدخال رقم الهاتف والرمز بشكل صحيح.",
+  userNotFoundError: "الحساب غير موجود. تحقق من رقم الهاتف.",
+  alreadyVerifiedError: "هذا الحساب تم التحقق منه مسبقا.",
+  attemptsExceededError: "تم تجاوز عدد المحاولات المسموح بها. اطلب رمزا جديدا.",
+  invalidCodeError: "رمز التحقق غير صحيح.",
+  tokenExpiredError: "انتهت صلاحية رمز التحقق. أعد الإرسال.",
+  deviceAttestationFailedError:
+    "تعذر التحقق من أن هذا الجهاز أصلي وآمن. إذا استمرت المشكلة تواصل مع الدعم.",
+  deviceChallengeExpiredError: "انتهت مهلة التحقق من الجهاز. حاول مرة أخرى.",
+  deviceVerificationFailedError:
+    "تعذر التحقق من الجهاز. حدّث التطبيق وحاول مرة أخرى.",
+  genericVerifyError: "تعذر التحقق من الحساب. حاول مرة أخرى.",
+  phoneMissingError: "يرجى الرجوع لإدخال رقم الهاتف.",
+  codeLengthError: "أدخل رمز التحقق المكون من 6 أرقام.",
+  verifySuccess: "تم التحقق بنجاح.",
+  resendSuccess: "تم إرسال الرمز مرة أخرى.",
+  resendDailyLimitError:
+    "تم الوصول للحد الأقصى لعدد الرموز المرسلة اليوم. حاول لاحقا.",
+  resendNotAllowedError: "لا يمكن إعادة إرسال الرمز حاليا. حاول لاحقا.",
+  resendDisabledError: "تم تعطيل إرسال الرموز مؤقتا.",
+  resendFailedError: "تعذر إعادة إرسال الرمز. حاول مرة أخرى.",
+  backToLogin: "الرجوع لتسجيل الدخول",
+  screenTitle: "رمز التحقق",
+  codeSentToPhone: "أدخل رمز التحقق المكون من 6 أرقام المرسل إلى {{phone}}.",
+  codeSentToYourPhone: "أدخل رمز التحقق المكون من 6 أرقام المرسل إلى هاتفك.",
+  verifyingButton: "جارٍ التحقق...",
+  confirmCodeButton: "تأكيد الرمز",
+  resendingText: "جار الإرسال...",
+  resendCountdownText: "إعادة الإرسال خلال {{time}}",
+  resendButton: "إعادة إرسال",
+};

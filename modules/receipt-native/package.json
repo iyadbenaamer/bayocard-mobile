@@ -1,0 +1,8 @@
+{
+  "name": "receipt-native",
+  "version": "1.0.0",
+  "description": "Native (Kotlin) card-art rasterization and raw-socket ESC/POS printing, for low-end Android POS hardware where the pure-JS pipeline was too slow.",
+  "main": "index.js",
+  "license": "UNLICENSED",
+  "private": true
+}

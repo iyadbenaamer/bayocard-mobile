@@ -1,0 +1,18 @@
+export default {
+  decreaseQuantityLabel: "تقليل الكمية",
+  increaseQuantityLabel: "زيادة الكمية",
+  tierCount: "{{count}} فئات متاحة",
+  categoriesFallback: "الفئات",
+  removeFromFavoritesLabel: "إزالة من المفضلة",
+  addToFavoritesLabel: "إضافة إلى المفضلة",
+  errorLoadCategories: "تعذر تحميل الفئات.",
+  discountLabel: "خصم {{percentage}}%",
+  priceWithCurrency: "{{price}} د.ل",
+  priceLabel: "السعر: {{price}} د.ل",
+  buyPriceLabel: "سعر الشراء: {{price}} د.ل",
+  sellPriceLabel: "سعر البيع: {{price}} د.ل",
+  outOfStock: "نفدت الكمية",
+  addToCartLabel: "إضافة {{title}} للسلة",
+  addToCart: "إضافة للسلة",
+  noTiersAvailable: "لا توجد فئات متاحة.",
+};

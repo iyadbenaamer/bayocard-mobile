@@ -1,0 +1,16 @@
+export default {
+  phoneNotRegisteredError: "رقم الهاتف غير مرتبط بأي حساب.",
+  codeSendingDisabledError: "تم تعطيل إرسال رموز التحقق مؤقتا.",
+  resendNotAllowedError: "لا يمكن إعادة إرسال الرمز حاليا. حاول لاحقا.",
+  genericError: "تعذر المتابعة. حاول مرة أخرى.",
+  phoneRequired: "يرجى إدخال رقم الهاتف.",
+  phoneInvalid: "رقم الهاتف غير صحيح. يجب أن يبدأ بـ 09 ويتكون من 10 أرقام.",
+  codeSentSuccess: "تم إرسال رمز التحقق.",
+  title: "هل نسيت كلمة المرور",
+  subtitle: "أدخل رقم هاتفك لإرسال رمز استعادة كلمة المرور.",
+  phoneLabel: "رقم الهاتف",
+  phonePlaceholder: "09xxxxxxxx",
+  continuingButton: "جارٍ المتابعة...",
+  continueButton: "متابعة",
+  backToLogin: "الرجوع لتسجيل الدخول",
+};

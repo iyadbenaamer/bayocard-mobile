@@ -1,0 +1,23 @@
+export default {
+  title: "تأكيد التحويل",
+  recipientLabel: "المستلم",
+  amountLabel: "المبلغ",
+  feeLabel: "الرسوم",
+  feeLabelWithPercentage: "الرسوم ({{percentage}}%)",
+  noFee: "بدون رسوم",
+  totalChargedLabel: "الإجمالي المخصوم من رصيدك",
+  currency: "د.ل.",
+  submitting: "جارٍ التحويل...",
+  confirmButton: "تأكيد التحويل",
+  backButton: "تراجع",
+  successMessage: "تم تحويل الرصيد بنجاح.",
+  errorRecipientNotFound: "رقم الهاتف غير مسجل لدى أي مستخدم.",
+  errorSelfNotAllowed: "لا يمكنك تحويل الرصيد لنفسك.",
+  errorRecipientInactive: "حساب المستلم غير نشط حاليًا.",
+  errorIndividualToBusinessNotAllowed:
+    "لا يمكن للحساب الفردي تحويل الرصيد إلى حساب تجاري.",
+  errorAmountTooSmall: "أقل مبلغ يمكن تحويله هو 0.01 د.ل.",
+  errorInsufficientBalance: "رصيدك غير كافٍ لإتمام هذه العملية.",
+  errorInProgress: "العملية قيد المعالجة، حاول مرة أخرى بعد قليل.",
+  errorGeneric: "تعذر إتمام عملية التحويل. حاول مرة أخرى.",
+};

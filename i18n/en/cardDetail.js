@@ -1,0 +1,18 @@
+export default {
+  decreaseQuantityLabel: "Decrease quantity",
+  increaseQuantityLabel: "Increase quantity",
+  tierCount: "{{count}} options available",
+  categoriesFallback: "Categories",
+  removeFromFavoritesLabel: "Remove from favorites",
+  addToFavoritesLabel: "Add to favorites",
+  errorLoadCategories: "Couldn't load categories.",
+  discountLabel: "{{percentage}}% off",
+  priceWithCurrency: "{{price}} LYD",
+  priceLabel: "Price: {{price}} LYD",
+  buyPriceLabel: "Buy price: {{price}} LYD",
+  sellPriceLabel: "Sell price: {{price}} LYD",
+  outOfStock: "Out of stock",
+  addToCartLabel: "Add {{title}} to cart",
+  addToCart: "Add to cart",
+  noTiersAvailable: "No tiers available.",
+};
