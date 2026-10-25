@@ -4,6 +4,9 @@ export default {
   paymentMethodLabel: "وسيلة الدفع",
   amountLabelTemplate: "المبلغ ({{min}} - {{max}} د.ل.)",
   amountMinimumLabelTemplate: "المبلغ (الحد الأدنى {{min}} د.ل.)",
+  paidAmountLabel: "المبلغ المدفوع",
+  amountAfterFeeLabel: "المبلغ بعد خصم الرسوم",
+  feeLabelTemplate: "الرسوم: {{fee}}%",
   fixedAmountLabelTemplate: "سيتم شحن {{amount}} د.ل.",
   amountPlaceholder: "0.00",
   submitting: "جارٍ المعالجة...",
@@ -14,6 +17,8 @@ export default {
   amountOutOfRangeTemplate: "المبلغ يجب أن يكون بين {{min}} و {{max}} د.ل.",
   amountMinimumTemplate: "المبلغ يجب ألا يقل عن {{min}} د.ل.",
   errorAmountOutOfRange: "المبلغ خارج الحدود المسموح بها لهذه الوسيلة.",
+  errorDailyLimitExceeded:
+    "يتبقى لديك {{remaining}} د.ل. من حد اليوم لهذه الوسيلة.",
   errorMethodUnavailable: "وسيلة الدفع هذه لم تعد متاحة. اختر وسيلة أخرى.",
   errorGatewayError: "تعذر إنشاء عملية الدفع. تحقق من البيانات المدخلة.",
   errorGeneric: "تعذر بدء عملية الشحن. حاول مرة أخرى.",

@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -36,6 +36,7 @@ const WalletTopup = () => {
   const [isLoadingMethods, setIsLoadingMethods] = useState(true);
   const [selectedId, setSelectedId] = useState(null);
   const [amount, setAmount] = useState("");
+  const [amountAfterFee, setAmountAfterFee] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [popup, setPopup] = useState({
     visible: false,
@@ -72,6 +73,84 @@ const WalletTopup = () => {
     () => methods.find((method) => method._id === selectedId) || null,
     [methods, selectedId],
   );
+  const feeRate = useMemo(() => {
+    if (!selectedMethod || selectedMethod.fee == null) return 0;
+    const value = Number(selectedMethod.fee);
+    return Number.isFinite(value) ? value : 0;
+  }, [selectedMethod]);
+  const hasFee = feeRate > 0;
+  const normalizeAmountText = (value) => {
+    if (value === "") return "";
+
+    const sanitized = value.replace(/[^\d.]/g, "");
+    if (!sanitized) return "";
+
+    const parts = sanitized.split(".");
+    const [wholePart, ...fractionParts] = parts;
+    const fraction = fractionParts.join("").slice(0, 2);
+    const hasDecimal = sanitized.includes(".");
+
+    if (!hasDecimal) {
+      return wholePart || "0";
+    }
+
+    const normalizedWhole = wholePart || "0";
+    return fraction.length === 0
+      ? `${normalizedWhole}.`
+      : `${normalizedWhole}.${fraction}`;
+  };
+  const truncateToTwoDecimals = (value) => {
+    if (!Number.isFinite(value)) return value;
+    const floated = Number(value);
+    return Math.trunc(floated * 100) / 100;
+  };
+  const formatComputedValue = (rawValue, computedValue) => {
+    if (rawValue === "" || rawValue == null) return "";
+    const value = truncateToTwoDecimals(computedValue);
+    if (Number.isInteger(value)) {
+      return String(value);
+    }
+    return String(value);
+  };
+
+  useEffect(() => {
+    setAmount("");
+    setAmountAfterFee("");
+  }, [selectedId]);
+
+  const syncAmounts = (field, rawValue) => {
+    const normalizedValue = normalizeAmountText(rawValue);
+
+    if (normalizedValue === "") {
+      if (field === "amount") {
+        setAmount("");
+        setAmountAfterFee("");
+      } else setAmountAfterFee("");
+      return;
+    }
+
+    const nextValue = Number(normalizedValue);
+    if (!Number.isFinite(nextValue) || nextValue < 0) {
+      return;
+    }
+
+    if (!hasFee) {
+      if (field === "amount") setAmount(normalizedValue);
+      else setAmountAfterFee(normalizedValue);
+      return;
+    }
+
+    if (field === "amount") {
+      setAmount(normalizedValue);
+      setAmountAfterFee(
+        formatComputedValue(normalizedValue, nextValue * (1 - feeRate)),
+      );
+      return;
+    }
+
+    setAmountAfterFee(normalizedValue);
+    setAmount(formatComputedValue(normalizedValue, nextValue / (1 - feeRate)));
+  };
 
   // A method can turn its amount field off (amountEnabled === false); the
   // server then charges its fixedAmount and the app asks the user nothing.
@@ -132,14 +211,19 @@ const WalletTopup = () => {
       });
     } catch (error) {
       const code = error?.response?.data?.code;
+      const dailyLimitError = error?.response?.data;
       const message =
         code === "WALLET_TOPUP_METHOD_UNAVAILABLE"
           ? t("walletTopup.errorMethodUnavailable")
           : code === "WALLET_TOPUP_AMOUNT_OUT_OF_RANGE"
             ? t("walletTopup.errorAmountOutOfRange")
-            : code === "WALLET_TOPUP_GATEWAY_ERROR"
-              ? t("walletTopup.errorGatewayError")
-              : t("walletTopup.errorGeneric");
+            : code === "WALLET_TOPUP_DAILY_LIMIT_EXCEEDED"
+              ? t("walletTopup.errorDailyLimitExceeded", {
+                  remaining: dailyLimitError?.remainingDailyLimit ?? 0,
+                })
+              : code === "WALLET_TOPUP_GATEWAY_ERROR"
+                ? t("walletTopup.errorGatewayError")
+                : t("walletTopup.errorGeneric");
       showPopup(message, "error");
     } finally {
       setIsSubmitting(false);
@@ -155,53 +239,123 @@ const WalletTopup = () => {
         type={popup.type}
         onClose={closePopup}
       />
-      <KeyboardAwareScrollView
-        enableOnAndroid
-        keyboardShouldPersistTaps="handled"
-        style={{ flex: 1 }}
-        contentContainerStyle={{ flexGrow: 1, paddingBottom: 24 }}
-      >
-        <View className="px-6 pt-6">
-          <ScreenTitle back>{t("walletTopup.title")}</ScreenTitle>
 
-          {isLoadingMethods ? (
-            <View className="mt-10 items-center">
-              <ActivityIndicator color={palette.primary} />
-            </View>
-          ) : methods.length === 0 ? (
+      <View style={{ flex: 1, paddingHorizontal: 24, paddingTop: 24 }}>
+        <View style={{ flexShrink: 0 }}>
+          <ScreenTitle back>{t("walletTopup.title")}</ScreenTitle>
+        </View>
+
+        {isLoadingMethods ? (
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <ActivityIndicator color={palette.primary} />
+          </View>
+        ) : methods.length === 0 ? (
+          <View style={{ flex: 1, justifyContent: "center" }}>
             <Text
-              className="mt-6 text-center"
-              style={{ color: palette.textMuted, fontFamily: FontFamily.regular }}
+              style={{
+                textAlign: "center",
+                color: palette.textMuted,
+                fontFamily: FontFamily.regular,
+              }}
             >
               {t("walletTopup.noMethodsAvailable")}
             </Text>
-          ) : (
-            <>
+          </View>
+        ) : (
+          <>
+            <View style={{ flexShrink: 0 }}>
               {selectedMethod ? (
-                <View className="mt-4">
+                <View style={{ marginTop: 16 }}>
+                  {selectedMethod.note ? (
+                    <View
+                      style={{
+                        marginBottom: 12,
+                        paddingHorizontal: 12,
+                        paddingVertical: 10,
+                        borderRadius: 12,
+                        borderWidth: 1,
+                        borderColor: withAlpha(palette.accent, 0.4),
+                        backgroundColor: withAlpha(palette.accent, 0.08),
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: palette.text,
+                          fontFamily: FontFamily.medium,
+                          fontSize: 13,
+                          lineHeight: 18,
+                        }}
+                      >
+                        {selectedMethod.note}
+                      </Text>
+                    </View>
+                  ) : null}
+                  {hasFee ? (
+                    <Text
+                      style={{
+                        marginBottom: 8,
+                        color: palette.accent,
+                        fontFamily: FontFamily.medium,
+                        fontSize: 12,
+                      }}
+                    >
+                      {t("walletTopup.feeLabelTemplate", {
+                        fee: (feeRate * 100).toFixed(2),
+                      })}
+                    </Text>
+                  ) : null}
                   {amountEnabled ? (
-                    <InputField
-                      label={t(
-                        selectedMethod.maxDeposit == null
-                          ? "walletTopup.amountMinimumLabelTemplate"
-                          : "walletTopup.amountLabelTemplate",
-                        selectedMethod.maxDeposit == null
-                          ? { min: selectedMethod.minDeposit }
-                          : {
-                              min: selectedMethod.minDeposit,
-                              max: selectedMethod.maxDeposit,
-                            },
-                      )}
-                      containerClassName="mb-3"
-                      value={amount}
-                      onChangeText={setAmount}
-                      keyboardType="number-pad"
-                      placeholder={t("walletTopup.amountPlaceholder")}
-                    />
+                    <>
+                      <InputField
+                        label={t(
+                          selectedMethod.maxDeposit == null
+                            ? "walletTopup.amountMinimumLabelTemplate"
+                            : "walletTopup.amountLabelTemplate",
+                          selectedMethod.maxDeposit == null
+                            ? { min: selectedMethod.minDeposit }
+                            : {
+                                min: selectedMethod.minDeposit,
+                                max: selectedMethod.maxDeposit,
+                              },
+                        )}
+                        containerClassName="mb-3"
+                        value={amount}
+                        onChangeText={(text) => syncAmounts("amount", text)}
+                        keyboardType="number-pad"
+                        placeholder={t("walletTopup.amountPlaceholder")}
+                      />
+                      {hasFee ? (
+                        <View style={{ marginBottom: 12 }}>
+                          <Text
+                            style={{
+                              marginBottom: 6,
+                              color: palette.textMuted,
+                              fontFamily: FontFamily.medium,
+                              fontSize: 12,
+                            }}
+                          >
+                            {t("walletTopup.amountAfterFeeLabel")}
+                          </Text>
+                          <Text
+                            style={{
+                              color: palette.text,
+                              fontFamily: FontFamily.medium,
+                              fontSize: 16,
+                            }}
+                          >
+                            {amountAfterFee
+                              ? `${amountAfterFee} د.ل.`
+                              : "0.00 د.ل."}
+                          </Text>
+                        </View>
+                      ) : null}
+                    </>
                   ) : (
                     <Text
-                      className="mb-3 text-sm"
                       style={{
+                        marginBottom: 8,
                         color: palette.text,
                         fontFamily: FontFamily.medium,
                       }}
@@ -213,11 +367,13 @@ const WalletTopup = () => {
                   )}
                 </View>
               ) : null}
+            </View>
 
+            <View style={{ flex: 1, marginTop: 16 }}>
               <Text
-                className="mt-2 mb-3"
                 style={{
-                  fontSize: 11,
+                  marginBottom: 10,
+                  fontSize: 14,
                   color: palette.textMuted,
                   fontFamily: FontFamily.medium,
                   letterSpacing: 0.6,
@@ -226,77 +382,72 @@ const WalletTopup = () => {
               >
                 {t("walletTopup.paymentMethodLabel")}
               </Text>
-              <View style={{ gap: 10, marginBottom: 8 }}>
-                {methods.map((method) => {
-                  const isSelected = method._id === selectedId;
-                  return (
-                    <PressableScale
-                      key={method._id}
-                      onPress={() => setSelectedId(method._id)}
-                      scaleTo={0.97}
-                    >
-                      <GlowCard
-                        radius={Radii.lg}
-                        tone={isSelected ? palette.accent : palette.border}
-                        intensity={isSelected ? "strong" : "soft"}
-                        borderWidth={isSelected ? 1.5 : 1}
-                        contentStyle={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: 12,
-                          paddingHorizontal: 14,
-                          paddingVertical: 12,
-                        }}
+
+              <ScrollView
+                style={{ flex: 1 }}
+                contentContainerStyle={{
+                  paddingBottom: 8,
+                }}
+                showsVerticalScrollIndicator={false}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    justifyContent: "space-between",
+                    gap: 10,
+                  }}
+                >
+                  {methods.map((method) => {
+                    const isSelected = method._id === selectedId;
+                    return (
+                      <PressableScale
+                        key={method._id}
+                        onPress={() => setSelectedId(method._id)}
+                        scaleTo={0.97}
+                        style={{ width: "31%" }}
                       >
-                        <Image
-                          source={{ uri: resolveImageUrl(method.iconPath) }}
-                          style={{ width: 46, height: 46 }}
-                          contentFit="contain"
-                        />
-                        <Text
-                          numberOfLines={1}
-                          style={{
-                            flex: 1,
-                            fontSize: 14,
-                            color: palette.text,
-                            fontFamily: FontFamily.medium,
-                          }}
-                        >
-                          {method.label}
-                        </Text>
-                        <View
-                          style={{
-                            width: 22,
-                            height: 22,
-                            borderRadius: 11,
-                            borderWidth: 2,
-                            borderColor: isSelected
-                              ? palette.accent
-                              : withAlpha(palette.borderStrong, isDark ? 0.9 : 1),
+                        <GlowCard
+                          radius={Radii.lg}
+                          tone={isSelected ? palette.accent : palette.border}
+                          intensity={isSelected ? "strong" : "soft"}
+                          borderWidth={isSelected ? 1.5 : 1}
+                          contentStyle={{
                             alignItems: "center",
                             justifyContent: "center",
+                            gap: 2,
+                            paddingVertical: 2,
+                            minHeight: 110,
                           }}
                         >
-                          {isSelected ? (
-                            <View
-                              style={{
-                                width: 11,
-                                height: 11,
-                                borderRadius: 6,
-                                backgroundColor: palette.accent,
-                              }}
-                            />
-                          ) : null}
-                        </View>
-                      </GlowCard>
-                    </PressableScale>
-                  );
-                })}
-              </View>
-            </>
-          )}
-        </View>
-      </KeyboardAwareScrollView>
+                          <Image
+                            source={{ uri: resolveImageUrl(method.iconPath) }}
+                            style={{ width: 52, height: 52 }}
+                            contentFit="contain"
+                          />
+                          <Text
+                            numberOfLines={2}
+                            style={{
+                              textAlign: "center",
+                              fontSize: 12,
+                              color: palette.text,
+                              fontFamily: FontFamily.medium,
+                              lineHeight: 16,
+                            }}
+                          >
+                            {method.label}
+                          </Text>
+                        </GlowCard>
+                      </PressableScale>
+                    );
+                  })}
+                </View>
+              </ScrollView>
+            </View>
+          </>
+        )}
+      </View>
+
       {selectedMethod ? (
         <View
           style={{

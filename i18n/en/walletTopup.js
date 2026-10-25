@@ -4,6 +4,9 @@ export default {
   paymentMethodLabel: "Payment method",
   amountLabelTemplate: "Amount ({{min}} - {{max}} LYD)",
   amountMinimumLabelTemplate: "Amount (minimum {{min}} LYD)",
+  paidAmountLabel: "Amount paid",
+  amountAfterFeeLabel: "Amount after deduction",
+  feeLabelTemplate: "Fee: {{fee}}%",
   fixedAmountLabelTemplate: "You will be charged {{amount}} LYD.",
   amountPlaceholder: "0.00",
   submitting: "Processing...",
@@ -16,6 +19,8 @@ export default {
   amountMinimumTemplate: "The amount must be at least {{min}} LYD.",
   errorAmountOutOfRange:
     "The amount is outside the allowed range for this method.",
+  errorDailyLimitExceeded:
+    "You have {{remaining}} LYD remaining from the daily limit for this method.",
   errorMethodUnavailable:
     "This payment method is no longer available. Choose another method.",
   errorGatewayError: "Couldn't create the payment. Check the entered details.",
