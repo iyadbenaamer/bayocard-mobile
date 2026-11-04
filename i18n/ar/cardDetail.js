@@ -1,7 +1,7 @@
 export default {
   decreaseQuantityLabel: "تقليل الكمية",
   increaseQuantityLabel: "زيادة الكمية",
-  tierCount: "{{count}} فئات متاحة",
+  tierCount: "{{count}} فئات",
   categoriesFallback: "الفئات",
   removeFromFavoritesLabel: "إزالة من المفضلة",
   addToFavoritesLabel: "إضافة إلى المفضلة",
