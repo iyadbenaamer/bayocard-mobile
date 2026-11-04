@@ -1,6 +1,11 @@
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
+import {
+  ActivityIndicator,
+  PermissionsAndroid,
+  Platform,
+  View,
+} from "react-native";
 import { WebView } from "react-native-webview";
 import { useDispatch } from "react-redux";
 
@@ -97,6 +102,16 @@ const WalletTopupWebview = () => {
   const { t } = useTranslation();
 
   const [isPageLoading, setIsPageLoading] = useState(true);
+  // Android only: some gateway wallets open the camera, either through
+  // getUserMedia or an <input type="file" capture>. react-native-webview asks
+  // for CAMERA on the first path but not the second - once CAMERA is in the
+  // manifest and not yet granted, its file chooser silently drops the camera
+  // and never answers the page. Asking up front covers both paths. The page
+  // waits for the answer because a second permission request made while the
+  // dialog is open would replace this one's listener and never resolve.
+  const [cameraChecked, setCameraChecked] = useState(
+    Platform.OS !== "android",
+  );
   const [popup, setPopup] = useState({
     visible: false,
     message: "",
@@ -147,6 +162,17 @@ const WalletTopupWebview = () => {
     showPopup(t("walletTopupWebview.processingMessage"), "info");
     setTimeout(() => router.replace("/(tabs)/transactions"), 1400);
   }, [router, t]);
+
+  useEffect(() => {
+    if (Platform.OS !== "android") return;
+    const camera = PermissionsAndroid.PERMISSIONS.CAMERA;
+    PermissionsAndroid.check(camera)
+      .then((granted) => (granted ? null : PermissionsAndroid.request(camera)))
+      .catch(() => {
+        // a denied or failed request still lets non-camera wallets work
+      })
+      .finally(() => setCameraChecked(true));
+  }, []);
 
   const checkStatusOnce = useCallback(async () => {
     if (!paymentRef || resolvedRef.current) return;
@@ -276,7 +302,7 @@ const WalletTopupWebview = () => {
         <ScreenTitle back>{t("walletTopupWebview.title")}</ScreenTitle>
       </View>
       <View style={{ flex: 1 }}>
-        {paymentUrl ? (
+        {paymentUrl && cameraChecked ? (
           <WebView
             source={{ uri: String(paymentUrl) }}
             // Keep every scheme in-WebView so onShouldStartLoadWithRequest is
@@ -289,6 +315,13 @@ const WalletTopupWebview = () => {
             onNavigationStateChange={handleNavigationStateChange}
             onShouldStartLoadWithRequest={handleShouldStartLoad}
             injectedJavaScript={CLEAR_PREFILLED_PHONE_JS}
+            // Some gateway wallets open the camera (QR scan / identity check).
+            // Once the OS camera permission is granted, hand it to the page
+            // without a second in-WebView prompt (iOS; Android already does
+            // this), and keep the camera preview inline instead of fullscreen.
+            mediaCapturePermissionGrantType="grant"
+            allowsInlineMediaPlayback
+            mediaPlaybackRequiresUserAction={false}
           />
         ) : null}
         {isPageLoading ? (

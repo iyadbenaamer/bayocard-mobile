@@ -10,6 +10,7 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
+        "NSCameraUsageDescription": "Required by some payment methods to scan codes or verify your identity during wallet top-up.",
         "NSBluetoothAlwaysUsageDescription": "Required to discover and connect to Bluetooth printers.",
         "NSBluetoothPeripheralUsageDescription": "Required to discover and connect to Bluetooth printers.",
         "NSLocationWhenInUseUsageDescription": "Required to scan for Bluetooth devices on some Android/iOS versions.",
@@ -36,6 +37,7 @@
       "predictiveBackGestureEnabled": false,
       "package": "com.bayocard",
       "permissions": [
+        "CAMERA",
         "INTERNET",
         "BLUETOOTH",
         "BLUETOOTH_ADMIN",
