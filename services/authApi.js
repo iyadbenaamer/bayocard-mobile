@@ -80,13 +80,6 @@ export const sendVerificationCode = async ({ phone, type } = {}) => {
   return response.data;
 };
 
-export const checkPhoneForResetPassword = async (phone) => {
-  const response = await axiosClient.get(
-    `/check-phone-availability/reset-password/${encodeURIComponent(phone)}`,
-  );
-  return response.data;
-};
-
 export const verifyResetPasswordCode = async ({ phone, code } = {}) => {
   const response = await axiosClient.post("/verify-reset-password", {
     phone,

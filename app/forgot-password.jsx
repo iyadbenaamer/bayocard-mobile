@@ -12,10 +12,7 @@ import { FontFamily } from "../constants/fonts";
 import { Radii } from "../constants/theme";
 import { usePalette } from "../hooks/use-palette";
 import { useTranslation } from "../hooks/use-translation";
-import {
-  checkPhoneForResetPassword,
-  sendVerificationCode,
-} from "../services/authApi";
+import { sendVerificationCode } from "../services/authApi";
 
 const ForgotPasswordScreen = () => {
   const router = useRouter();
@@ -41,8 +38,6 @@ const ForgotPasswordScreen = () => {
 
   const getResetPhoneErrorMessage = (code) => {
     switch (code) {
-      case "AUTH_PHONE_NOT_REGISTERED":
-        return t("forgotPassword.phoneNotRegisteredError");
       case "AUTH_CODE_SENDING_DISABLED":
         return t("forgotPassword.codeSendingDisabledError");
       case "AUTH_RESET_RESEND_NOT_ALLOWED":
@@ -65,13 +60,6 @@ const ForgotPasswordScreen = () => {
 
     setIsSubmitting(true);
     try {
-      const availability = await checkPhoneForResetPassword(normalizedPhone);
-      if (!availability?.success) {
-        const message = getResetPhoneErrorMessage(availability?.code);
-        showPopup(message, "warning");
-        return;
-      }
-
       const data = await sendVerificationCode({
         phone: normalizedPhone,
         type: "reset-password",

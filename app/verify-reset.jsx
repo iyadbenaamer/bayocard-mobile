@@ -116,8 +116,6 @@ const VerifyResetPasswordScreen = () => {
 
   const getVerifyResetErrorMessage = (codeValue) => {
     switch (codeValue) {
-      case "AUTH_USER_NOT_FOUND":
-        return t("verifyReset.userNotFoundError");
       case "AUTH_RESET_TOKEN_MISSING":
         return t("verifyReset.resetTokenMissingError");
       case "AUTH_RESET_ATTEMPTS_EXCEEDED":
