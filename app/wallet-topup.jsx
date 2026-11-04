@@ -345,9 +345,9 @@ const WalletTopup = () => {
                               fontSize: 16,
                             }}
                           >
-                            {amountAfterFee
-                              ? `${amountAfterFee} د.ل.`
-                              : "0.00 د.ل."}
+                            {t("walletTopup.amountAfterFeeValueTemplate", {
+                              amount: amountAfterFee || "0.00",
+                            })}
                           </Text>
                         </View>
                       ) : null}

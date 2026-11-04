@@ -6,6 +6,7 @@ export default {
   amountMinimumLabelTemplate: "المبلغ (الحد الأدنى {{min}} د.ل.)",
   paidAmountLabel: "المبلغ المدفوع",
   amountAfterFeeLabel: "المبلغ بعد خصم الرسوم",
+  amountAfterFeeValueTemplate: "{{amount}} د.ل.",
   feeLabelTemplate: "الرسوم: {{fee}}%",
   fixedAmountLabelTemplate: "سيتم شحن {{amount}} د.ل.",
   amountPlaceholder: "0.00",

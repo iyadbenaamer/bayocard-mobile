@@ -6,6 +6,7 @@ export default {
   amountMinimumLabelTemplate: "Amount (minimum {{min}} LYD)",
   paidAmountLabel: "Amount paid",
   amountAfterFeeLabel: "Amount after deduction",
+  amountAfterFeeValueTemplate: "{{amount}} LYD",
   feeLabelTemplate: "Fee: {{fee}}%",
   fixedAmountLabelTemplate: "You will be charged {{amount}} LYD.",
   amountPlaceholder: "0.00",
