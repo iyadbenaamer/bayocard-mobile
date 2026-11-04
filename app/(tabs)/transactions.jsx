@@ -219,6 +219,14 @@ const TransactionItem = React.memo(
           >
             {transaction.orderId.items.map((item, idx) => {
               const isLast = idx === transaction.orderId.items.length - 1;
+              const typeName = getLocalizedText(
+                item.tierId?.typeId?.name,
+                locale,
+              );
+              const tierTitle = getLocalizedText(
+                item.tierId?.title ?? item.title,
+                locale,
+              );
               return (
                 <View
                   key={idx}
@@ -241,10 +249,8 @@ const TransactionItem = React.memo(
                         fontFamily: FontFamily.bold,
                       }}
                     >
-                      {item.tierId?.typeId?.name
-                        ? `${getLocalizedText(item.tierId.typeId.name, locale)} - `
-                        : ""}
-                      {getLocalizedText(item.title, locale)}
+                      {typeName}
+                      {tierTitle ? ` - ${tierTitle}` : ""}
                     </Text>
                     <Text
                       style={{
