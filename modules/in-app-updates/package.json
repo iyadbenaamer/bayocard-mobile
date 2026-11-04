@@ -1,0 +1,8 @@
+{
+  "name": "in-app-updates",
+  "version": "1.0.0",
+  "description": "Google Play In-App Updates (immediate and flexible flows) for Android, so store updates install from inside the app instead of sending the user to the Play Store page.",
+  "main": "index.js",
+  "license": "UNLICENSED",
+  "private": true
+}

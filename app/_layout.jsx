@@ -31,6 +31,7 @@ import {
 import { LocaleProvider, useLocale } from "../hooks/use-locale";
 import { useTranslation } from "../hooks/use-translation";
 import { useAppUpdates } from "../hooks/use-app-updates";
+import { usePlayUpdate } from "../hooks/use-play-update";
 import { usePushNotifications } from "../hooks/use-push-notifications";
 import { checkAppVersionStatus } from "../services/appVersionApi";
 import { persistor, store, selectUserProfile } from "../state/store";
@@ -157,7 +158,18 @@ const AppNavigator = ({ updateAvailable, storeUrl }) => {
   usePushNotifications(profile);
   const { status: otaStatus, reloadApp } = useAppUpdates({ autoCheck: true });
   const [dismissedOta, setDismissedOta] = useState(false);
+  const playUpdate = usePlayUpdate();
+  const [dismissedPlayUpdate, setDismissedPlayUpdate] = useState(false);
   const [dismissedStoreUpdate, setDismissedStoreUpdate] = useState(false);
+
+  // Prefers Play's in-app flexible update (downloads in the background,
+  // then the banner offers a restart to install); falls back to the store
+  // page wherever Play can't serve it - iOS, sideloaded installs, or Play
+  // not offering the new version to this device yet.
+  const handleStoreUpdate = async () => {
+    const result = await playUpdate.startFlexibleUpdate();
+    if (result === "unavailable" && storeUrl) Linking.openURL(storeUrl);
+  };
   const navigationTheme = {
     ...(theme === "dark" ? DarkTheme : DefaultTheme),
     colors: {
@@ -252,13 +264,21 @@ const AppNavigator = ({ updateAvailable, storeUrl }) => {
           onAction={reloadApp}
           onDismiss={() => setDismissedOta(true)}
         />
+      ) : playUpdate.status === "downloaded" && !dismissedPlayUpdate ? (
+        <UpdateBanner
+          message={t("layout.otaDownloadedMessage")}
+          actionLabel={t("layout.restartAction")}
+          onAction={playUpdate.completeUpdate}
+          onDismiss={() => setDismissedPlayUpdate(true)}
+        />
       ) : (
         updateAvailable &&
-        !dismissedStoreUpdate && (
+        !dismissedStoreUpdate &&
+        playUpdate.status === "idle" && (
           <UpdateBanner
             message={t("layout.storeUpdateAvailableMessage")}
             actionLabel={t("layout.updateAction")}
-            onAction={() => storeUrl && Linking.openURL(storeUrl)}
+            onAction={handleStoreUpdate}
             onDismiss={() => setDismissedStoreUpdate(true)}
           />
         )

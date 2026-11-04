@@ -1,10 +1,15 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useEffect } from "react";
 import { Linking, Text, View } from "react-native";
 
 import { FontFamily } from "../constants/fonts";
 import { Radii } from "../constants/theme";
 import { usePalette } from "../hooks/use-palette";
 import { useTranslation } from "../hooks/use-translation";
+import {
+  isInAppUpdatesAvailable,
+  startPlayUpdate,
+} from "../modules/in-app-updates/index.js";
 import AmbientBackdrop from "./arcade/AmbientBackdrop";
 import IconBubble from "./arcade/IconBubble";
 import NeonButton from "./arcade/NeonButton";
@@ -15,6 +20,21 @@ import NeonButton from "./arcade/NeonButton";
 const ForceUpdateScreen = ({ storeUrl }) => {
   const { palette } = usePalette();
   const { t } = useTranslation();
+
+  // Opens Play's full-screen in-app update straight away, since the app is
+  // unusable until updated anyway. Only once on mount - re-opening it on
+  // every return to the foreground would trap the user in Play's dialog
+  // after cancelling it, as Play's own screen backgrounds the app.
+  useEffect(() => {
+    startPlayUpdate("immediate");
+  }, []);
+
+  // Falls back to the store page wherever Play can't serve the update
+  // (iOS, sideloaded installs, or Play not offering it to this device yet).
+  const handleUpdate = async () => {
+    const result = await startPlayUpdate("immediate");
+    if (result === "unavailable" && storeUrl) Linking.openURL(storeUrl);
+  };
 
   return (
     <View
@@ -50,8 +70,8 @@ const ForceUpdateScreen = ({ storeUrl }) => {
           label={t("forceUpdate.updateNow")}
           size="lg"
           full
-          disabled={!storeUrl}
-          onPress={() => storeUrl && Linking.openURL(storeUrl)}
+          disabled={!storeUrl && !isInAppUpdatesAvailable()}
+          onPress={handleUpdate}
           style={{ marginTop: 26 }}
         />
       </View>
