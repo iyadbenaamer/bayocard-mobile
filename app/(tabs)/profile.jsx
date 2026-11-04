@@ -151,6 +151,9 @@ export const Profile = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  // Asked for with every password change: holding a session shouldn't be
+  // enough to set a new password (the server checks it whenever it's sent).
+  const [currentPassword, setCurrentPassword] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordValid, setPasswordValid] = useState(false);
@@ -167,6 +170,7 @@ export const Profile = () => {
     }
     setName(profile.name || "");
     if (!isEditing) {
+      setCurrentPassword("");
       setPassword("");
       setConfirmPassword("");
       setPasswordValid(false);
@@ -232,6 +236,10 @@ export const Profile = () => {
         showPopup(t("profileTab.validationPassword"), "warning");
         return;
       }
+      if (!currentPassword) {
+        showPopup(t("profileTab.validationCurrentPassword"), "warning");
+        return;
+      }
     }
     if (!hasChanges) {
       showPopup(t("profileTab.noChanges"), "info");
@@ -242,12 +250,14 @@ export const Profile = () => {
       const payload = { name: trimmedName };
       if (password) {
         payload.password = password;
+        payload.currentPassword = currentPassword;
       }
       const updated = await updateUserProfile(payload);
       if (updated) {
         dispatch(setUser(updated));
         showPopup(t("profileTab.saveSuccess"), "success");
         setIsEditing(false);
+        setCurrentPassword("");
         setPassword("");
         setConfirmPassword("");
       }
@@ -255,6 +265,12 @@ export const Profile = () => {
       const code = error?.response?.data?.code;
       if (code === "CHECK_INVALID_NAME") {
         showPopup(t("profileTab.validationNameLength"), "warning");
+      } else if (code === "AUTH_CURRENT_PASSWORD_INVALID") {
+        showPopup(t("profileTab.currentPasswordWrong"), "warning");
+      } else if (code === "AUTH_CURRENT_PASSWORD_REQUIRED") {
+        showPopup(t("profileTab.validationCurrentPassword"), "warning");
+      } else if (code === "AUTH_RATE_LIMIT_EXCEEDED") {
+        showPopup(t("profileTab.tooManyAttempts"), "warning");
       } else {
         showPopup(t("profileTab.saveError"), "error");
       }
@@ -270,6 +286,7 @@ export const Profile = () => {
   const handleCancelEdit = () => {
     setIsEditing(false);
     setName(profile?.name || "");
+    setCurrentPassword("");
     setPassword("");
     setConfirmPassword("");
     setPasswordValid(false);
@@ -451,6 +468,13 @@ export const Profile = () => {
           />
         ) : (
           <>
+            <PasswordInput
+              label={t("profileTab.currentPasswordLabel")}
+              name="currentPassword"
+              value={currentPassword}
+              onChange={setCurrentPassword}
+              placeholder="••••••••"
+            />
             <PasswordInput
               label={t("profileTab.newPasswordLabel")}
               name="password"
