@@ -1,6 +1,7 @@
 import Constants from "expo-constants";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
+import { useRouter } from "expo-router";
 import { useEffect, useRef } from "react";
 import { Alert, AppState, Linking, Platform } from "react-native";
 import { useDispatch } from "react-redux";
@@ -31,6 +32,11 @@ Notifications.setNotificationHandler({
 });
 
 const projectId = Constants.expoConfig?.extra?.eas?.projectId;
+
+// Identifier of the last tapped notification already acted on, so the same
+// tap isn't handled twice when it's seen both as the launch response and by
+// the response listener.
+let lastHandledNotificationId = null;
 
 // Module-scoped so concurrent callers (the permission gate below and the
 // login-triggered registration effect) share one in-flight check instead of
@@ -125,6 +131,7 @@ const useNotificationPermissionGate = () => {
 export const usePushNotifications = (profile) => {
   useNotificationPermissionGate();
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const hasRegisteredAuthRef = useRef(false);
   const hasRegisteredAnonRef = useRef(false);
@@ -153,6 +160,42 @@ export const usePushNotifications = (profile) => {
 
     return () => subscription.remove();
   }, [dispatch]);
+
+  // Follows a tapped notification's link the same way the notifications
+  // screen does: an in-app path ("/cards/...") navigates inside the app,
+  // anything else (a website) opens in the browser. The OS always brings
+  // the app forward on a tap; this then hands off to the link.
+  useEffect(() => {
+    const handleResponse = (response) => {
+      if (
+        response?.actionIdentifier !== Notifications.DEFAULT_ACTION_IDENTIFIER
+      ) {
+        return;
+      }
+      const notificationId = response.notification.request.identifier;
+      if (notificationId === lastHandledNotificationId) return;
+      lastHandledNotificationId = notificationId;
+      // Otherwise a JS reload (e.g. applying an OTA update) would read the
+      // same response back on startup and open the link again.
+      Notifications.clearLastNotificationResponse();
+
+      const link = response.notification.request.content.data?.link;
+      if (typeof link !== "string" || !link) return;
+      if (link.startsWith("/")) {
+        router.push(link);
+      } else {
+        Linking.openURL(link).catch(() => {});
+      }
+    };
+
+    // A tap that launched the app from a killed state happens before this
+    // listener exists, so it's only available as the last response.
+    handleResponse(Notifications.getLastNotificationResponse());
+    const subscription =
+      Notifications.addNotificationResponseReceivedListener(handleResponse);
+
+    return () => subscription.remove();
+  }, [router]);
 
   useEffect(() => {
     if (isLoggedInActive) {
