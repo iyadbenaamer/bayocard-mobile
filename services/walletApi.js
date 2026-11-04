@@ -10,7 +10,7 @@ export const getPaymentMethods = async () => {
 };
 
 /**
- * Register a pay.net.ly hosted payment for a wallet top-up.
+ * Open an Ezone Pay hosted payment link for a wallet top-up.
  * @param {Object} payload {paymentMethodId, amount}
  * @returns {Promise<{paymentRef: string, paymentUrl: string, amount: number}>}
  */
@@ -21,8 +21,8 @@ export const openTopup = async (payload) => {
 
 /**
  * Poll a top-up payment's current status. The server reconciles it against
- * pay.net.ly's receipt endpoint on each call, so this resolves correctly even
- * before (or without) a webhook delivery.
+ * the payment link's Ezone Pay transactions on each call, so this resolves
+ * correctly even before (or without) a webhook delivery.
  * @param {string} paymentRef
  * @returns {Promise<{paymentRef: string, status: string, amount: number}>}
  */
