@@ -43,7 +43,14 @@ const NotificationItem = ({ item, palette, onPress }) => {
             cachePolicy="memory-disk"
           />
         ) : (
-          <IconBubble size={48} variant="gradient">
+          // The row stretches its children to the card's height by default,
+          // and the bubble's gradient has no height of its own, so without
+          // this it grows into a tall pill next to a multi-line body.
+          <IconBubble
+            size={48}
+            variant="gradient"
+            style={{ alignSelf: "flex-start" }}
+          >
             <Ionicons name="notifications" size={20} color="#FFFFFF" />
           </IconBubble>
         )}
