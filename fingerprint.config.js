@@ -24,5 +24,16 @@ module.exports = {
       picked up.
     */
     "node_modules/@react-native-masked-view/masked-view/android/src/main/AndroidManifest.xml",
+    /*
+      Same failure mode, different source: Gradle compiles the Gradle plugins
+      shipped inside node_modules (e.g. expo-updates-gradle-plugin) in place,
+      and Kotlin 2.x keeps a .kotlin/sessions/*.salive marker next to them
+      for as long as the Gradle daemon lives (up to 3 hours after a local
+      build). The default ignore list covers their build/ and .gradle/
+      output but not .kotlin/, so running `eas build` or `eas update` in
+      that window computed a local runtime version EAS couldn't match. The
+      directory only ever holds compiler session state.
+    */
+    "**/*-gradle-plugin/.kotlin/**/*",
   ],
 };
