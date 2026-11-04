@@ -61,7 +61,7 @@ const Exchange = () => {
       return;
     }
     const parsedAmount = Number(amount);
-    if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
+    if (!Number.isInteger(parsedAmount) || parsedAmount < 1) {
       showPopup(t("exchange.validationAmountInvalid"), "warning");
       return;
     }
@@ -130,7 +130,13 @@ const Exchange = () => {
               label={t("exchange.amountLabel")}
               containerClassName="mb-4"
               value={amount}
-              onChangeText={setAmount}
+              onChangeText={(value) => {
+                if (/[.,٫]/.test(value)) {
+                  showPopup(t("exchange.fractionalAmountNotAllowed"), "warning");
+                } else if (/^\d*$/.test(value)) {
+                  setAmount(value);
+                }
+              }}
               keyboardType="number-pad"
               placeholder={t("exchange.amountPlaceholder")}
             />

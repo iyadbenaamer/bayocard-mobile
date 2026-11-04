@@ -16,7 +16,7 @@ export default {
   errorRecipientInactive: "The recipient's account is currently inactive.",
   errorIndividualToBusinessNotAllowed:
     "Individual accounts cannot transfer balance to business accounts.",
-  errorAmountTooSmall: "The smallest amount you can transfer is 0.01 LYD.",
+  errorAmountTooSmall: "The smallest amount you can transfer is 1 LYD.",
   errorInsufficientBalance:
     "Your balance isn't enough to complete this transaction.",
   errorInProgress:
